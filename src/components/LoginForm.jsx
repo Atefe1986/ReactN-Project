@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig"; // Adjust the import path as necessary
-function LoginForm() {
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
@@ -88,6 +88,6 @@ function LoginForm() {
       </form>
     </div>
   );
-}
+};
 
 export default LoginForm;
