@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig"; // Adjust the import path as necessary
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -8,34 +8,24 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
     if (!isLogin && password !== confirmPassword) {
-      alert("Passwords do not match");
+      setError("Passwords do not match!");
       return;
     }
-    setError("");
 
-    if (isLogin) {
-      console.log("Logging in");
-      // Handle login logic here
-      // Example: signInWithEmailAndPassword(auth, email, password)
-    } else {
-      try {
-        createUserWithEmailAndPassword(auth, email, password);
-        // User signed up successfully
-        alert("User registered successfully");
-      } catch (error) {
-        // Handle errors here
-        setError(error.message);
+    try {
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        await createUserWithEmailAndPassword(auth, email, password);
       }
+      setError(""); // Clear any previous errors
+    } catch {
+      setError("Wrong Email or password");
     }
   };
-
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
@@ -83,7 +73,14 @@ function LoginForm() {
         <div>
           <p className="toggle-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <a className="toggle-link" href="#" onClick={() => setIsLogin(!isLogin)}>
+            <a
+              className="toggle-link"
+              href="#"
+              onClick={() => {
+                setError("");
+                setIsLogin(!isLogin);
+              }}
+            >
               {isLogin ? "Sign Up" : "Login"}
             </a>
           </p>
