@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
-const LoginForm = () => {
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig"; // Adjust the import path as necessary
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
@@ -18,6 +19,21 @@ const LoginForm = () => {
       return;
     }
     setError("");
+
+    if (isLogin) {
+      console.log("Logging in");
+      // Handle login logic here
+      // Example: signInWithEmailAndPassword(auth, email, password)
+    } else {
+      try {
+        createUserWithEmailAndPassword(auth, email, password);
+        // User signed up successfully
+        alert("User registered successfully");
+      } catch (error) {
+        // Handle errors here
+        setError(error.message);
+      }
+    }
   };
 
   return (
@@ -75,6 +91,6 @@ const LoginForm = () => {
       </form>
     </div>
   );
-};
+}
 
 export default LoginForm;
